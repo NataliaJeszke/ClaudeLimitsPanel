@@ -4,6 +4,7 @@ import type { UsageData } from '../shared/types'
 export interface ParsedUsage {
   model: string
   usage: UsageData
+  date: string // YYYY-MM-DD
 }
 
 export interface ParseResult {
@@ -54,8 +55,19 @@ export function parseNewLines(filePath: string, fromOffset: number): ParseResult
       const usage = message.usage
       const cacheCreation = usage.cache_creation ?? {}
 
+      // Extract date from entry timestamp, fall back to today
+      let date: string
+      try {
+        const ts = new Date(data.timestamp)
+        date = `${ts.getFullYear()}-${String(ts.getMonth() + 1).padStart(2, '0')}-${String(ts.getDate()).padStart(2, '0')}`
+      } catch {
+        const now = new Date()
+        date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+      }
+
       entries.push({
         model,
+        date,
         usage: {
           input_tokens: usage.input_tokens ?? 0,
           output_tokens: usage.output_tokens ?? 0,

@@ -56,16 +56,19 @@ export function checkAutoReset(): boolean {
   return false
 }
 
-export function addSpending(amount: number): void {
+export function addSpending(amount: number, date?: string): void {
   if (amount <= 0) return
   const data = load()
-  const today = getToday()
+  const day = date ?? getToday()
+  // Only count entries from the current month
+  const entryMonth = day.substring(0, 7)
+  if (entryMonth !== data.currentMonth) return
   const daily = [...data.dailySpending]
-  const idx = daily.findIndex(d => d.date === today)
+  const idx = daily.findIndex(d => d.date === day)
   if (idx >= 0) {
     daily[idx] = { ...daily[idx], cost: daily[idx].cost + amount }
   } else {
-    daily.push({ date: today, cost: amount })
+    daily.push({ date: day, cost: amount })
   }
   save({ ...data, totalSpentUSD: data.totalSpentUSD + amount, dailySpending: daily })
 }
@@ -91,7 +94,8 @@ export function resetMonth(): void {
 }
 
 export function clearAllData(): void {
-  save({ ...DEFAULT, currentMonth: getCurrentMonth() })
+  const data = load()
+  save({ ...DEFAULT, currentMonth: getCurrentMonth(), lastProcessedOffsets: data.lastProcessedOffsets })
 }
 
 export function getStoreData() {

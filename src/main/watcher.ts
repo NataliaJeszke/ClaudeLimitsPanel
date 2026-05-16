@@ -24,13 +24,20 @@ function processFile(filePath: string): void {
 
     if (result.newOffset <= offset) return
 
-    let totalCost = 0
+    // Group costs by date to attribute spending to the correct day
+    const costByDate = new Map<string, number>()
     for (const entry of result.entries) {
-      totalCost += calculateCost(entry.model, entry.usage)
+      const cost = calculateCost(entry.model, entry.usage)
+      costByDate.set(entry.date, (costByDate.get(entry.date) ?? 0) + cost)
+    }
+
+    let totalCost = 0
+    for (const [date, cost] of costByDate) {
+      addSpending(cost, date)
+      totalCost += cost
     }
 
     if (totalCost > 0) {
-      addSpending(totalCost)
       console.log(`[watcher] +$${totalCost.toFixed(4)} from ${parts[1]}`)
       if (onUpdateCallback) onUpdateCallback()
     }

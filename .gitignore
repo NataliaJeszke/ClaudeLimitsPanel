@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-electron/
+*.dmg
+*.app
+release/
+
+# macOS
+.DS_Store
+*.pem
+
+# Editor
+.vscode/
+.idea/
+*.swp

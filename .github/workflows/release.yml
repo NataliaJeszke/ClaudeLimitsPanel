@@ -28,8 +28,53 @@ jobs:
       - name: Package DMG
         run: npm run package
 
-      - name: Upload DMG to Release
+      - name: Find DMG
+        id: dmg
+        run: |
+          DMG_PATH=$(find dist -name "*.dmg" | head -1)
+          DMG_NAME=$(basename "$DMG_PATH")
+          SHA256=$(shasum -a 256 "$DMG_PATH" | awk '{print $1}')
+          echo "path=$DMG_PATH" >> $GITHUB_OUTPUT
+          echo "name=$DMG_NAME" >> $GITHUB_OUTPUT
+          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.dmg
+          files: ${{ steps.dmg.outputs.path }}
           generate_release_notes: true
+
+      - name: Update Homebrew tap
+        env:
+          TAP_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+          SHA256: ${{ steps.dmg.outputs.sha256 }}
+          DMG_NAME: ${{ steps.dmg.outputs.name }}
+        run: |
+          VERSION_NUM="${VERSION#v}"
+          ENCODED_DMG=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$DMG_NAME'))")
+          URL="https://github.com/NataliaJeszke/ClaudeLimitsPanel/releases/download/${VERSION}/${ENCODED_DMG}"
+
+          git clone https://x-access-token:${TAP_TOKEN}@github.com/NataliaJeszke/homebrew-tap.git tap-repo
+          mkdir -p tap-repo/Casks
+
+          cat > tap-repo/Casks/claude-limits-panel.rb << EOF
+          cask "claude-limits-panel" do
+            version "${VERSION_NUM}"
+            sha256 "${SHA256}"
+
+            url "${URL}"
+            name "Claude Limits Panel"
+            desc "macOS menu bar app for monitoring Claude Code API spending"
+            homepage "https://github.com/NataliaJeszke/ClaudeLimitsPanel"
+
+            app "Claude Limits Panel.app"
+          end
+          EOF
+
+          cd tap-repo
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add Casks/claude-limits-panel.rb
+          git commit -m "Update claude-limits-panel to ${VERSION}"
+          git push

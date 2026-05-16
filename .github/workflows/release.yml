@@ -54,8 +54,8 @@ jobs:
           DMG_NAME: ${{ steps.dmg.outputs.name }}
         run: |
           VERSION_NUM="${VERSION#v}"
-          ENCODED_DMG=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$DMG_NAME'))")
-          URL="https://github.com/NataliaJeszke/ClaudeLimitsPanel/releases/download/${VERSION}/${ENCODED_DMG}"
+          SAFE_DMG=$(echo "$DMG_NAME" | sed 's/ /./g')
+          URL="https://github.com/NataliaJeszke/ClaudeLimitsPanel/releases/download/${VERSION}/${SAFE_DMG}"
 
           git clone https://x-access-token:${TAP_TOKEN}@github.com/NataliaJeszke/homebrew-tap.git tap-repo
           mkdir -p tap-repo/Casks

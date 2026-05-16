@@ -40,12 +40,14 @@
       "target": [
         "dmg"
       ],
-      "category": "public.app-category.developer-tools"
+      "category": "public.app-category.developer-tools",
+      "icon": "assets/AppIcon.icns"
     },
     "files": [
       "dist/**/*",
       "dist-electron/**/*",
       "assets/**/*"
-    ]
+    ],
+    "icon": "assets/AppIcon.icns"
   }
 }

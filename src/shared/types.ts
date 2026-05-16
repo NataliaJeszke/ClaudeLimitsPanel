@@ -25,7 +25,6 @@ export interface StoreSchema {
   dailySpending: DailySpending[]
   lastProcessedOffsets: Record<string, number>
   resetHistory: ResetRecord[]
-  launchAtLogin: boolean
 }
 
 export interface UsageUpdate {

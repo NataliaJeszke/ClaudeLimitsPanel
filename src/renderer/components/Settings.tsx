@@ -7,7 +7,6 @@ interface SettingsProps {
 
 export default function Settings({ monthlyBudget, onBack }: SettingsProps) {
   const [budget, setBudget] = useState(String(monthlyBudget))
-  const [launch, setLaunch] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
   const [confirmClear, setConfirmClear] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -19,7 +18,6 @@ export default function Settings({ monthlyBudget, onBack }: SettingsProps) {
     if (!isNaN(parsed) && parsed > 0) {
       await window.electronAPI.updateBudget(parsed)
     }
-    await window.electronAPI.setLaunchAtLogin(launch)
     setSaved(true)
     setTimeout(() => { setSaved(false); onBack() }, 800)
   }
@@ -60,13 +58,6 @@ export default function Settings({ monthlyBudget, onBack }: SettingsProps) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={labelStyle}>Launch at login</span>
-        <button onClick={() => setLaunch(v => !v)} style={{ ...toggleStyle, backgroundColor: launch ? '#6d28d9' : 'rgba(255,255,255,0.1)' }}>
-          <div style={{ width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#fff', transform: launch ? 'translateX(16px)' : 'translateX(0)', transition: 'transform 0.2s ease' }} />
-        </button>
-      </div>
-
       <button onClick={handleSave} style={saveBtnStyle}>
         {saved ? '✓ Saved' : 'Save Settings'}
       </button>
@@ -92,4 +83,3 @@ const inputStyle: React.CSSProperties = { flex: 1, background: 'rgba(255,255,255
 const saveBtnStyle: React.CSSProperties = { background: '#6d28d9', border: 'none', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px', fontWeight: '600', padding: '10px' }
 const dangerBtnStyle: React.CSSProperties = { background: 'none', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '8px', color: '#fbbf24', cursor: 'pointer', fontSize: '12px', padding: '8px' }
 const backBtnStyle: React.CSSProperties = { background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '18px', padding: '0 4px' }
-const toggleStyle: React.CSSProperties = { width: '36px', height: '20px', borderRadius: '10px', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }

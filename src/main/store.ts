@@ -22,7 +22,6 @@ const DEFAULT: StoreSchema = {
   dailySpending: [],
   lastProcessedOffsets: {},
   resetHistory: [],
-  launchAtLogin: false,
 }
 
 function load(): StoreSchema {
@@ -109,6 +108,3 @@ export function setMonthlyBudget(budget: number): void {
   save({ ...load(), monthlyBudget: budget })
 }
 
-export function setLaunchAtLogin(value: boolean): void {
-  save({ ...load(), launchAtLogin: value })
-}

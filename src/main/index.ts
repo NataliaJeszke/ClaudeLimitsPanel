@@ -3,7 +3,7 @@ import { menubar } from 'menubar'
 import path from 'path'
 import { startWatcher, stopWatcher } from './watcher'
 import { startScheduler, stopScheduler } from './scheduler'
-import { getStoreData, resetMonth, clearAllData, setMonthlyBudget, setLaunchAtLogin } from './store'
+import { getStoreData, resetMonth, clearAllData, setMonthlyBudget } from './store'
 import { initPricing } from './price-fetcher'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -72,11 +72,6 @@ ipcMain.handle('clear-all-data', () => {
   return true
 })
 
-ipcMain.handle('set-launch-at-login', (_event, value: boolean) => {
-  setLaunchAtLogin(value)
-  app.setLoginItemSettings({ openAtLogin: value, openAsHidden: true })
-  return true
-})
 
 app.on('before-quit', () => {
   stopWatcher()

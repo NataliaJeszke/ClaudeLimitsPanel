@@ -12,8 +12,7 @@ declare global {
       updateBudget: (budget: number) => Promise<boolean>
       resetMonth: () => Promise<boolean>
       clearAllData: () => Promise<boolean>
-      setLaunchAtLogin: (value: boolean) => Promise<boolean>
-      onUsageUpdate: (callback: (data: UsageUpdate) => void) => void
+onUsageUpdate: (callback: (data: UsageUpdate) => void) => void
       removeUsageUpdateListener: () => void
     }
   }

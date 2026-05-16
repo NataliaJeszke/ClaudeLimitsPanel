@@ -26,7 +26,7 @@ jobs:
         run: npm run build
 
       - name: Package DMG
-        run: npm run package
+        run: npm run package -- --publish never
 
       - name: Find DMG
         id: dmg

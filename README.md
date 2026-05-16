@@ -39,7 +39,26 @@ The menu bar icon reflects current state at a glance. Clicking it opens the pane
 | Persistence | [electron-store](https://github.com/sindresorhus/electron-store) |
 | Packaging | [electron-builder](https://www.electron.build/) |
 
-## Getting Started
+## Installation
+
+### Via Homebrew (recommended)
+
+```bash
+brew tap NataliaJeszke/tap
+brew install --cask claude-limits-panel
+```
+
+The app will appear in your menu bar after installation.
+
+> **Note:** The app is not code-signed. On first launch macOS may block it — go to **System Settings → Privacy & Security** and click **Open Anyway**.
+
+### Via DMG
+
+Download the latest `.dmg` from [Releases](https://github.com/NataliaJeszke/ClaudeLimitsPanel/releases), open it, drag the app to Applications, and launch it.
+
+---
+
+## Development
 
 ### Prerequisites
 
@@ -77,16 +96,12 @@ npm run build
 npm run package
 ```
 
-The output will be in the `release/` directory:
+The output will be in the `dist/` directory. A new GitHub Release with the DMG is created automatically when you push a tag:
 
+```bash
+git tag v1.0.1
+git push origin v1.0.1
 ```
-release/
-└── Claude Limits Panel-1.0.0.dmg
-```
-
-Double-click the DMG, drag the app to Applications, and launch it from there. The app will appear in the menu bar.
-
-> **Note:** The app is not code-signed. On first launch macOS may block it — go to **System Settings → Privacy & Security** and click **Open Anyway**.
 
 ## Project Structure
 

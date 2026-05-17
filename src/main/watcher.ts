@@ -13,10 +13,13 @@ let onUpdateCallback: (() => void) | null = null
 function processFile(filePath: string): void {
   if (!filePath.endsWith('.jsonl')) return
 
-  // Skip subagent directories — only process top-level <project>/<session>.jsonl
+  // Accept both top-level session files and subagent files:
+  //   <project>/<session>.jsonl (parts.length === 2)
+  //   <project>/<session>/subagents/<agent>.jsonl (parts.length === 4)
   const relative = path.relative(CLAUDE_PROJECTS, filePath)
   const parts = relative.split(path.sep)
-  if (parts.length !== 2) return
+  if (parts.length !== 2 && parts.length !== 4) return
+  if (parts.length === 4 && parts[2] !== 'subagents') return
 
   try {
     const offset = getLastProcessedOffset(filePath)
@@ -38,7 +41,7 @@ function processFile(filePath: string): void {
     }
 
     if (totalCost > 0) {
-      console.log(`[watcher] +$${totalCost.toFixed(4)} from ${parts[1]}`)
+      console.log(`[watcher] +$${totalCost.toFixed(4)} from ${parts.slice(1).join('/')}`)
       if (onUpdateCallback) onUpdateCallback()
     }
 
@@ -56,7 +59,7 @@ export function startWatcher(onUpdate: () => void): void {
     ignoreInitial: false,
     usePolling: true,
     interval: 2000,
-    depth: 1, // only <project>/<file>.jsonl — skip deeper subdirs
+    depth: 3, // <project>/<session>.jsonl and <project>/<session>/subagents/<agent>.jsonl
   })
 
   watcher.on('add', processFile)

@@ -1,6 +1,6 @@
 {
   "name": "claude-limits-panel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "macOS menu bar app for monitoring Claude Code spending",
   "main": "dist-electron/main/index.js",
   "scripts": {
